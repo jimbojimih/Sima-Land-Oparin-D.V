@@ -193,11 +193,10 @@ async def login(request):
         "401":
             description: Invalid username or password
     """    
-    print(request)    
     data = await request.json()
     name = data.get('name')
     password = data.get('password')
-
+    
     async with engine.begin() as conn:
         r = await conn.execute(select(users).where(users.c.name==name))      
         data = r.fetchone()
@@ -213,7 +212,6 @@ async def login(request):
     return web.Response(text='Invalid username or password', status=401)
 
 @routes.post('/logout')
-@auth_required
 async def logout(request):
     session = await get_session(request)
     session.clear()
